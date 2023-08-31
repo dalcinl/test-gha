@@ -1,0 +1,38 @@
+name: python
+
+permissions:
+  contents: read
+
+on:
+  workflow_dispatch:
+    inputs:
+      runs-on:
+        required: true
+        type: choice
+        default: ubuntu-latest
+        options:
+          - ubuntu-latest
+          - ubuntu-2204
+          - ubuntu-1804
+          - macos-latest
+          - macos-13
+          - macos-12
+          - macos-11
+          - windows-latest
+          - windows-2022
+          - windows-2019
+      python-version:
+        required: true
+        type: string
+        default: 3
+
+jobs:
+  python:
+    runs-on: ${{ inputs.runs-on }}
+    steps:
+    - name: Setup Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ inputs.python-version }}
+    - name: Setup tmate session
+      uses: mxschmitt/action-tmate@v3
