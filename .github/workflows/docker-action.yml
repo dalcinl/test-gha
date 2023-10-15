@@ -1,0 +1,25 @@
+name: docker-action
+
+permissions:
+  contents: read
+
+on:
+  #push:
+  workflow_dispatch:
+
+jobs:
+  docker-action:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        image:
+          - debian:latest
+          - ubuntu:latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: ./.github/actions/container
+      with:
+        image: ${{ matrix.image }}
+        entrypoint: /bin/bash
+        args: test-container.sh

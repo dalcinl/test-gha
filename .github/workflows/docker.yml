@@ -5,6 +5,7 @@ permissions:
 
 on:
   push:
+  workflow_dispatch:
 
 jobs:
   docker:
@@ -13,12 +14,26 @@ jobs:
       fail-fast: false
       matrix:
         image:
+          - fedora:latest
           - debian:latest
           - ubuntu:latest
+        platform:
+          - amd64
+          - arm64
+          - ppc64le
+
     steps:
-    - uses: actions/checkout@v4
-    - uses: ./.github/actions/container
-      with:
-        image: ${{ matrix.image }}
-        entrypoint: /bin/bash
-        args: test-container.sh
+      - name: Setup QEMU
+        uses: docker/setup-qemu-action@v1
+        with:
+          platforms: all
+
+      - name: Run in Docker
+        run: |
+          docker run \
+            --rm \
+            -v $(pwd):/${{ github.workspace }} \
+            -w ${{ github.workspace }} \
+            --platform linux/${{ matrix.platform }} \
+            ${{ matrix.image }} \
+            bash -c "uname -a; arch; cat /etc/os-release"
