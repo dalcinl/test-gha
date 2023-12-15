@@ -1,0 +1,24 @@
+name: micromamba
+on:
+  workflow_dispatch:
+
+jobs:
+  job:
+    runs-on: ${{ matrix.runner }}
+    strategy:
+      fail-fast: false
+      matrix:
+        runner:
+          #- windows-2019
+          - windows-2022
+    defaults:
+      run:
+        shell: bash -el {0}
+    steps:
+    - uses: mamba-org/setup-micromamba@v1
+      with:
+        init-shell: bash
+        environment-name: test
+        create-args: python=3.7 pypy
+    #- uses: mxschmitt/action-tmate@v3
+    #  if: always()
