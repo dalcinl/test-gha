@@ -15,6 +15,7 @@ on:
           - ubuntu-2204
           - ubuntu-1804
           - macos-latest
+          - macos-14
           - macos-13
           - macos-12
           - macos-11
