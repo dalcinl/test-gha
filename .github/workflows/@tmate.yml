@@ -1,0 +1,72 @@
+name: '@tmate'
+
+permissions:
+  contents: read
+
+on:
+  workflow_dispatch:
+    inputs:
+      runs-on:
+        required: true
+        type: choice
+        default: ubuntu-latest
+        options:
+          - ubuntu-latest
+          - ubuntu-2204
+          - ubuntu-1804
+          - macos-latest
+          - macos-13
+          - macos-12
+          - macos-11
+          - windows-latest
+          - windows-2022
+          - windows-2019
+      python:
+        required: false
+        type: string
+        default: ''
+      micromamba:
+        required: false
+        type: string
+        default: ''
+      mpi:
+        required: false
+        type: string
+        default: ''
+
+jobs:
+  session:
+    runs-on: ${{ inputs.runs-on }}
+    steps:
+
+    - if: ${{ inputs.python }}
+      name: Setup Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ inputs.python }}
+
+    - if: ${{ inputs.micromamba }}
+      name: Setup Micromamba
+      uses: mamba-org/setup-micromamba@v2
+      with:
+        init-shell: bash
+        post-cleanup: none
+        environment-name: venv
+        cache-downloads-key: 0
+        cache-environment-key: 0
+        create-args: ${{ inputs.micromamba }}
+        condarc: |
+          show_channel_urls: true
+          channel_priority: strict
+          channels:
+            - conda-forge
+            - nodefaults
+
+    - if: ${{ inputs.mpi }}
+      name: Setup MPI
+      uses: mpi4py/setup-mpi@v1
+      with:
+        mpi: ${{ inputs.mpi }}
+
+    - name: Setup tmate session
+      uses: mxschmitt/action-tmate@v3
