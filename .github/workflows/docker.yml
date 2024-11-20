@@ -16,12 +16,15 @@ jobs:
           - fedora:latest
           - debian:latest
           - ubuntu:latest
-        platform:
-          - amd64
-          - arm64
+        arch:
+          - x86_64
+          - aarch64
           - ppc64le
 
     steps:
+
+      - uses: actions/checkout@v4
+
       - name: Setup QEMU
         uses: docker/setup-qemu-action@v1
         with:
@@ -30,9 +33,11 @@ jobs:
       - name: Run in Docker
         run: |
           docker run \
-            --rm \
-            -v $(pwd):/${{ github.workspace }} \
-            -w ${{ github.workspace }} \
-            --platform linux/${{ matrix.platform }} \
-            ${{ matrix.image }} \
-            bash -c "uname -a; arch; cat /etc/os-release"
+          -v $(pwd):/${{ github.workspace }} \
+          -w ${{ github.workspace }} \
+          --platform linux/${{
+          matrix.arch == 'x86_64'  && 'amd64'   ||
+          matrix.arch == 'aarch64' && 'arm64'   ||
+          matrix.arch == 'ppc64le' && 'ppc64le'
+          }} ${{ matrix.image }} \
+          bash ./test-container.sh
