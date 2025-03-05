@@ -8,23 +8,30 @@ on:
 permissions:
   contents: read
 
+env:
+  runner_Linux_aarch64:
+  runner_Linux_x86_64:
+  runner_macOS_arm64:
+  runner_macOS_x86_64:
+
 jobs:
   job:
     name: "job ${{ matrix.platform }}"
-    runs-on: ${{ matrix.runner[matrix.platform] }}
+    runs-on: ${{ matrix.runner[matrix.platform] || 'ubuntu-24.04'}}
     strategy:
       fail-fast: false
       matrix:
-        platform:
-          - Linux-aarch64
-          - Linux-x86_64
-          - macOS-arm64
-          - macOS-x86_64
+        #platform:
+        #  - Linux-aarch64
+        #  - Linux-x86_64
+        #  - macOS-arm64
+        #  - macOS-x86_64
         runner:
           - Linux-aarch64: ubuntu-24.04-arm
             Linux-x86_64:  ubuntu-24.04
             macOS-arm64:   macos-15
             macOS-x86_64:  macos-13
+            # null: ubuntu-24.04
 
     steps:
 
