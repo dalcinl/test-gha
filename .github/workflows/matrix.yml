@@ -1,0 +1,36 @@
+name: matrix
+
+on:
+  push:
+    branches:
+      - matrix
+
+permissions:
+  contents: read
+
+jobs:
+  job:
+    name: "job ${{ matrix.platform }}"
+    runs-on: ${{ matrix.runner[matrix.platform] }}
+    strategy:
+      fail-fast: false
+      matrix:
+        platform:
+          - Linux-aarch64
+          - Linux-x86_64
+          - macOS-arm64
+          - macOS-x86_64
+        runner:
+          - Linux-aarch64: ubuntu-24.04-arm
+            Linux-x86_64:  ubuntu-24.04
+            macOS-arm64:   macos-15
+            macOS-x86_64:  macos-13
+
+    steps:
+
+    - id: print
+      run: |
+        # print
+        runner=${{ matrix.runner[matrix.platform] }}
+        echo $runner              | tee -a "$GITHUB_STEP_SUMMARY"
+        echo $(uname)-$(uname -m) | tee -a "$GITHUB_STEP_SUMMARY"
