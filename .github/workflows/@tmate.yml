@@ -45,6 +45,8 @@ jobs:
       uses: actions/setup-python@v5
       with:
         python-version: ${{ inputs.python }}
+        allow-prereleases: true
+        check-latest: true
 
     - if: ${{ inputs.micromamba }}
       name: Setup Micromamba
