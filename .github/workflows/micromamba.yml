@@ -9,16 +9,31 @@ jobs:
       fail-fast: false
       matrix:
         runner:
-          #- windows-2019
+          - windows-2025
           - windows-2022
+        packages:
+          - "python=3.14 pip"
+          - "python=3.14 pip python-freethreading"
     defaults:
       run:
         shell: bash -el {0}
+
     steps:
-    - uses: mamba-org/setup-micromamba@v1
+
+    - uses: mamba-org/setup-micromamba@v3
       with:
         init-shell: bash
+        post-cleanup: none
         environment-name: test
-        create-args: python=3.7 pypy
-    #- uses: mxschmitt/action-tmate@v3
-    #  if: always()
+        create-args: ${{ matrix.packages }}
+        condarc: |
+          show_channel_urls: true
+          channel_priority: strict
+          channels:
+            - conda-forge
+            - nodefaults
+
+    - run: command -v python
+    - run: python -m site
+    - run: find "$MAMBA_ROOT_PREFIX" -name pip
+    - run: python -m pip --help
