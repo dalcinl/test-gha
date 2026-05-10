@@ -77,6 +77,6 @@ jobs:
       uses: owenthereal/action-upterm@v1
       with:
         detached: true
-        wait-timeout-minutes: 1
+        wait-timeout-minutes: 2
         limit-access-to-actor: true
         limit-access-to-users: dalcinl
