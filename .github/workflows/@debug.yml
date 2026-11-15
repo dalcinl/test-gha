@@ -76,4 +76,4 @@ jobs:
         mpi: ${{ inputs.mpi }}
 
     - name: Setup debug session
-      uses: Warpbuilds/action-debugger@v1.3
+      uses: Warpbuilds/action-debugger@v2
